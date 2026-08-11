@@ -14,34 +14,20 @@ interface Todo {
 }
 
 export const TasksApp = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
+  //   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputValue, setInputValue] = useState("");
 
   const addTodo = () => {
     if (inputValue.length === 0) return;
 
-    // Será de tipo Todo (interface)
-    const newTodo: Todo = {
-      id: Date.now(),
-      text: inputValue.trim(),
-      completed: false,
-    };
-
     // Agregamos el nuevo ToDo al arreglo de ToDos actual
     setTodos([...todos, newTodo]);
 
     //setTodos((prev) => [...prev, newTodo]);
+    setInputValue("");
   };
 
   const toggleTodo = (id: number) => {
-    const updatedTodos = todos.map((todo) => {
-      if (todo.id === id) {
-        // Me retorna todos los valores del ToDo actual y el valor opuesto que tiene completed
-        return { ...todo, completed: !todo.completed };
-      }
-      return todo;
-    });
-
     setTodos(updatedTodos);
   };
 
