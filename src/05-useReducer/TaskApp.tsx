@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useReducer, useState } from "react";
 
 import { Plus, Trash2, Check } from "lucide-react";
 
@@ -7,33 +7,29 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-interface Todo {
-  id: number;
-  text: string;
-  completed: boolean;
-}
+import { getTasksInitialState, tasksReducer } from "./reducer/tasksReducer";
 
 export const TasksApp = () => {
+  // Pasamos el reducer creado
+  const [state, dispatch] = useReducer(tasksReducer, getTasksInitialState());
   //   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputValue, setInputValue] = useState("");
 
   const addTodo = () => {
     if (inputValue.length === 0) return;
 
-    // Agregamos el nuevo ToDo al arreglo de ToDos actual
-    setTodos([...todos, newTodo]);
+    // Agregamos el nuevo ToDo con el dispatch
+    dispatch({ type: "ADD_TODO", payload: inputValue });
 
-    //setTodos((prev) => [...prev, newTodo]);
     setInputValue("");
   };
 
   const toggleTodo = (id: number) => {
-    setTodos(updatedTodos);
+    dispatch({ type: "TOGGLE_TODO", payload: id });
   };
 
   const deleteTodo = (id: number) => {
-    const updatedTodos = todos.filter((todo) => todo.id != id);
-    setTodos(updatedTodos);
+    dispatch({ type: "DELETE_TODO", payload: id });
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -41,6 +37,9 @@ export const TasksApp = () => {
       addTodo();
     }
   };
+
+  // Creamos la contante de los todos que pasa el reducer
+  const todos = state.todos;
 
   const completedCount = todos.filter((todo) => todo.completed).length;
   const totalCount = todos.length;

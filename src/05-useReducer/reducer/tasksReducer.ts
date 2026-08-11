@@ -17,6 +17,15 @@ export type TaskAction =
   | { type: "TOGGLE_TODO"; payload: number }
   | { type: "DELETE_TODO"; payload: number };
 
+export const getTasksInitialState = (): TaskState => {
+  return {
+    todos: [],
+    length: 0,
+    completed: 0,
+    pending: 0,
+  };
+};
+
 // La función siempre debe regresar un estado nuevo basado en los argumentos
 // Siempre regresamos el mismo tipo que el primer parámetro
 export const tasksReducer = (
