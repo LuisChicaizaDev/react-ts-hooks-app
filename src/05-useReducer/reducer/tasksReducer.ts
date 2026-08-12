@@ -1,3 +1,5 @@
+import * as z from "zod";
+
 interface Todo {
   id: number;
   text: string;
@@ -17,6 +19,21 @@ export type TaskAction =
   | { type: "TOGGLE_TODO"; payload: number }
   | { type: "DELETE_TODO"; payload: number };
 
+// Zod - Objeto de validación o esquema de un ToDo
+const TodoSchema = z.object({
+  id: z.number(),
+  text: z.string(),
+  completed: z.boolean(),
+});
+
+// Zod - Objeto de validación o esquema del state
+const TaskStateSchema = z.object({
+  todos: z.array(TodoSchema),
+  length: z.number(),
+  completed: z.number(),
+  pending: z.number(),
+});
+
 // Leemos si hay tasks en el local storage
 export const getTasksInitialState = (): TaskState => {
   const localStorageState = localStorage.getItem("tasks-state");
@@ -30,7 +47,21 @@ export const getTasksInitialState = (): TaskState => {
     };
   }
 
-  return JSON.parse(localStorageState);
+  // Validación mediante Zod
+  const result = TaskStateSchema.safeParse(JSON.parse(localStorageState));
+
+  // Si hay errores retorno el estado inicial para evitar manipulaciones en los datos del localStorage por el usuario
+  if (result.error) {
+    //console.log(result.error);
+    return {
+      todos: [],
+      length: 0,
+      completed: 0,
+      pending: 0,
+    };
+  }
+
+  return result.data;
 };
 
 // La función siempre debe regresar un estado nuevo basado en los argumentos
