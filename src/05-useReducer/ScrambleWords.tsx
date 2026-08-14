@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,6 +25,16 @@ export const ScrambleWords = () => {
     skipCounter,
     totalWords,
   } = state;
+
+  // Dispara el confeti
+  useEffect(() => {
+    if (points === 0) return;
+    confetti({
+      particleCount: 100,
+      spread: 120,
+      origin: { y: 0.6 },
+    });
+  }, [points]); // Se dispara cuando cambia el estado de los puntos que es cuando adivina una palabra
 
   // Adivinar palabra
   const handleGuessSubmit = (e: React.SubmitEvent) => {
